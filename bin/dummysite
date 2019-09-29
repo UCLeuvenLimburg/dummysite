@@ -1,0 +1,30 @@
+from dummysite.generation import *
+from flask import Flask
+import argparse
+import time
+
+
+parser = argparse.ArgumentParser()
+parser.add_argument('--seed', type=int, default=0)
+parser.add_argument('--sleep', type=int, default=0)
+command_line_arguments = parser.parse_args()
+
+
+def pause():
+    time.sleep(command_line_arguments.sleep / 1000)
+
+app = Flask(__name__)
+
+def generate_page(id):
+    pause()
+    return Generator(command_line_arguments.seed).generate_page(id)
+
+@app.route('/')
+def index():
+    return generate_page('')
+
+@app.route('/<id>')
+def page(id):
+    return generate_page(id)
+
+app.run()
